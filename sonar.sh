@@ -10,4 +10,4 @@ go test ./... -timeout 5s -cover -coverprofile=cover.out
 
 # Executa o scanner de código "SonarQube" usando o comando "~/sonar-scanner/bin/sonar-scanner".
 # Este comando pressupõe que o scanner de código SonarQube esteja instalado no diretório "~/sonar-scanner".
-~/sonar-scanner/bin/sonar-scanner
+~/sonar-scanner/bin/sonar-scanner -Dsonar.login=sqa_a342e4fd9ac94c919a7f8d2dc596f5bdeba71a6b
