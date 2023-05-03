@@ -26,9 +26,7 @@ do
         continue;
     done < $filename
 
-    echo "mockery --dir=${dir} --name=${name} --filename=mock.go --output=${dir} --outpkg=${packageName} --structname=${name:1}Mock"
-
-    rm ${dir}/mock.go
-
-    mockery --dir=${dir} --name=${name} --filename=mock.go --output=${dir} --outpkg=${packageName} --structname=${name:1}Mock
+    cmd="mockery --dir=${dir} --name=${name} --filename=mock.go --output=${dir} --outpkg=${packageName} --structname=${name:1}Mock"
+    echo "$cmd"
+    eval "$cmd"
 done
