@@ -2,21 +2,8 @@
 
 source /home/felipe/shellScript/.env
 
-# Solicita ao usuário que informe o ambiente de destino
-read -p "Qual ambiente gostaria de usar? [dev/st]: " environment
-
-# Verifica o ambiente informado e define o host correspondente
-if [ "$environment" = "dev" ]; then
-    host=$HOST_DEV
-    port=$PORT_DEV
-elif [ "$environment" = "st" ]; then
-    host=$HOST_ST
-    port=$PORT_ST
-else
-    # Se o ambiente informado não for "dev" nem "st", exibe uma mensagem de erro e sai
-    echo "Ambiente inválido"
-    exit 1
-fi
+host=$HOST_ST
+port=$PORT_ST
 
 # Solicita ao usuário o nome do banco de dados a ser importado
 read -p "Qual o nome do banco de dados que gostaria de importar? " dbname
