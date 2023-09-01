@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+source /home/felipe/shellScript/.env
 
 # Solicita ao usuário que informe o ambiente de destino
 read -p "Qual ambiente gostaria de usar? [dev/st]: " environment
@@ -8,8 +8,10 @@ read -p "Qual ambiente gostaria de usar? [dev/st]: " environment
 # Verifica o ambiente informado e define o host correspondente
 if [ "$environment" = "dev" ]; then
     host=$HOST_DEV
+    port=$PORT_DEV
 elif [ "$environment" = "st" ]; then
     host=$HOST_ST
+    port=$PORT_ST
 else
     # Se o ambiente informado não for "dev" nem "st", exibe uma mensagem de erro e sai
     echo "Ambiente inválido"
@@ -21,7 +23,7 @@ read -p "Qual o nome do banco de dados que gostaria de importar? " dbname
 
 # Realiza o dump do banco de dados remoto
 echo "Dumping $dbname..."
-PGPASSWORD=$PASSWORD pg_dump --host "$host" --username "${USERNAME}" --clean -Fc $dbname --file=/tmp/$dbname.dump
+PGPASSWORD=$PASSWORD pg_dump --host "$host" --port "${port}" --username "${USERNAME}" --clean -Fc $dbname --file=/tmp/$dbname.dump
 
 # Remove o banco de dados local e cria um novo banco de dados com o mesmo nome
 echo "Recriando banco de dados local..."

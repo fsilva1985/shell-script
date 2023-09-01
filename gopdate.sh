@@ -2,7 +2,7 @@
 
 # Obtém a versão atual do Golang e a versão mais recente disponível
 current_version=$(asdf current golang | awk '{print $2}')
-latest_version=$(asdf list all golang | grep 1.19 | tail -n 1)
+latest_version=$(asdf list all golang | grep 1.20 | tail -n 1)
 
 echo $current_version
 echo $latest_version
@@ -13,7 +13,7 @@ latest_version_patch=$(echo $latest_version | awk -F "." '{print $3}')
 
 # Compara as versões utilizando o operador ">"
 if [ "$latest_version_patch" -gt "$current_version_patch" ]; then
-    Instala a versão mais recente do Golang e define como global
+    # Instala a versão mais recente do Golang e define como global
     asdf install golang $latest_version
     asdf global golang $latest_version
     
