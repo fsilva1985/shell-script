@@ -10,12 +10,17 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      - name: Get Last Draft Release
+      - name: Get Last Release
         id: last_release
         uses: InsonusK/get-latest-release@v1.0.1
         with:
           myToken: ${{ secrets.GH_TOKEN }}
-          draft: true
+      - name: Check if Release is draft
+        run: |
+          if [ "${{ steps.last_release.outputs.draft }}" == "false" ]; then
+            echo "${{ steps.last_release.outputs.tag_name }} is not a draft release."
+            exit 1
+          fi  
       - name: Calculate Tag RC
         run: |
           if [ -z "$(git tag)" ]; then
