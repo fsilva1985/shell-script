@@ -23,6 +23,8 @@ jobs:
           fi  
       - name: Calculate Tag RC
         run: |
+          git config --global user.email "fsilva1985@gmail.com"
+          git config --global user.name "Felipe Silva"
           if [ -z "$(git tag)" ]; then
             git tag "${{ steps.last_release.outputs.tag_name }}-rc.1"
           else
