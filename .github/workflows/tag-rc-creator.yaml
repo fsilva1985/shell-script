@@ -1,0 +1,47 @@
+name: TAG RELEASE CANDIDATE CREATOR
+on:
+  workflow_dispatch:
+jobs:
+  create_staging_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Get Latest Draft Release
+        id: latest_draft_release
+        uses: InsonusK/get-latest-release@v1.0.1
+        with:
+          myToken: ${{ secrets.GH_TOKEN }}
+      - name: Verify Release is Draft
+        run: |
+          if [ "${{ steps.latest_draft_release.outputs.draft }}" == "false" ]; then
+            echo "Error: The release ${{ steps.latest_draft_release.outputs.tag_name }} is not a draft."
+            exit 1
+          fi
+      - name: Compare Latest Tags
+        run: |
+          latest_tag=$(git tag | sort -V | tail -n 1)
+          cleaned_tag=$(echo "$latest_tag" | sed -E 's/-rc\.[0-9]+$//')
+          if [ "$(printf '%s\n' "$cleaned_tag" "${{ steps.latest_draft_release.outputs.tag_name }}" | sort -V | head -n1)" != "$cleaned_tag" ]; then
+            echo "Error: The release tag ${{ steps.latest_draft_release.outputs.tag_name }} is less than the cleaned latest tag $cleaned_tag."
+            exit 1
+          fi
+      - name: Calculate New Release Candidate Tag
+        run: |
+          tags=$(git tag)
+          if [ -z "$tags" ]; then
+            tag_count=0
+          else
+            tag_count=$(echo "$tags" | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
+          fi
+          new_rc_number=$((${tag_count} + 1))
+          git tag "${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
+      - name: Push New Tag
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: "${{ secrets.GH_TOKEN }}"
+          tags: true
+          branch: "main"
