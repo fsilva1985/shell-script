@@ -1,4 +1,4 @@
-name: TAG RELEASE CANDIDATE CREATOR
+name: TAG RELEASE CANDIDATE
 on:
   workflow_dispatch:
 jobs:
@@ -25,18 +25,13 @@ jobs:
         run: |
           latest_tag=$(git tag | sort -V | tail -n 1)
           cleaned_tag=$(echo "$latest_tag" | sed -E 's/-rc\.[0-9]+$//')
-          if [ "$(printf '%s\n' "$cleaned_tag" "${{ steps.latest_draft_release.outputs.tag_name }}" | sort -V | head -n1)" != "$cleaned_tag" ]; then
+          if [[ "$cleaned_tag" > "${{ steps.latest_draft_release.outputs.tag_name }}" ]]; then
             echo "Error: The release tag ${{ steps.latest_draft_release.outputs.tag_name }} is less than the cleaned latest tag $cleaned_tag."
             exit 1
           fi
       - name: Calculate New Release Candidate Tag
         run: |
-          tags=$(git tag)
-          if [ -z "$tags" ]; then
-            tag_count=0
-          else
-            tag_count=$(echo "$tags" | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
-          fi
+          tag_count=$(echo git tag | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
           new_rc_number=$((${tag_count} + 1))
           git tag "${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
       - name: Push New Tag
@@ -44,4 +39,3 @@ jobs:
         with:
           github_token: "${{ secrets.GH_TOKEN }}"
           tags: true
-          branch: "main"
