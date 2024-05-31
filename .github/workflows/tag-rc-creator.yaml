@@ -31,6 +31,7 @@ jobs:
           fi
       - name: Calculate New Release Candidate Tag
         run: |
+          git tag
           tag_count=$(echo git tag | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
           new_rc_number=$((${tag_count} + 1))
           git tag "${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
