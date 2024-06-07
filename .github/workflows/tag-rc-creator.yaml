@@ -34,8 +34,13 @@ jobs:
           tag_count=$(git tag | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
           new_rc_number=$((${tag_count} + 1))
           git tag "${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
+      # - name: Push New Tag
+      #   uses: ad-m/github-push-action@v0.8.0
+      #   with:
+      #     github_token: "${{ secrets.GH_TOKEN }}"
+      #     tags: true
       - name: Push New Tag
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-          github_token: "${{ secrets.GH_TOKEN }}"
-          tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} main --tags
