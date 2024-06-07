@@ -26,4 +26,4 @@ jobs:
           fi
       - name: Print TAG
         run: |
-          echo "The tag value is: $TAG"
+          echo "The tag value is: $tagvalue"
