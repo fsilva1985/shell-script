@@ -20,10 +20,10 @@ jobs:
 
       - name: Calculate artifact tag
         run: |
-          if [ "${{ github.event_name }}" == workflow_dispatch ]; then
+          if [[ ${{ github.event_name }} == workflow_dispatch ]]; then
             echo "workflow_dispatch event detected!"
-          elif [ "${{ github.event_name }}" == push ]; then
+          elif [[ ${{ github.event_name }} == push ]]; then
             echo "push event detected!"
-          else [ "${{ github.event_name }}" == workflow_run ]; then
+          else
             echo "workflow_run event detected!"
           fi
