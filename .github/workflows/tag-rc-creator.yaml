@@ -33,7 +33,9 @@ jobs:
         run: |
           tag_count=$(git tag | grep "${{ steps.latest_draft_release.outputs.tag_name }}" | grep -P '^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' | wc -l)
           new_rc_number=$((${tag_count} + 1))
-          git tag "${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
+          new_tag="${{ steps.latest_draft_release.outputs.tag_name }}-rc.$new_rc_number"
+          echo "new_tag=$new_tag" >> $GITHUB_ENV
+          git tag "$new_tag"
       - name: Push New Tag
         uses: ad-m/github-push-action@v0.8.0
         with:
