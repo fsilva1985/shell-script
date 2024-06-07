@@ -14,16 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: STAGING
     steps:
-      # Build
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Calculate artifact tag
         run: |
           if [[ ${{ github.event_name }} == workflow_dispatch ]]; then
-            echo "workflow_dispatch event detected!"
-          elif [[ ${{ github.event_name }} == push ]]; then
-            echo "push event detected!"
+            echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
           else
-            echo "workflow_run event detected!"
+             tagvalue=$(echo ${{ github.ref }} | rev | cut -d'/' -f1 | rev)
+             echo "TAG=$tagvalue" >> $GITHUB_ENV
           fi
+          echo "$TAG"
