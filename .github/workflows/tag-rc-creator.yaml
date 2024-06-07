@@ -37,5 +37,5 @@ jobs:
       - name: Push New Tag
         uses: ad-m/github-push-action@v0.8.0
         with:
-          github_token: "${{ secrets.GH_TOKEN }}"
+          github_token: "${{ secrets.GH_TOKEN }}"z
           tags: true
