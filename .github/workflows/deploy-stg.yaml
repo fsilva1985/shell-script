@@ -20,7 +20,7 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == workflow_dispatch ]]; then
             echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
-          if [[ ${{ github.event_name }} == push ]]; then
+          elif [[ ${{ github.event_name }} == push ]]; then
             tagvalue=$(echo ${{ github.ref }} | rev | cut -d'/' -f1 | rev)
             echo "TAG=$tagvalue" >> $GITHUB_ENV
           else
