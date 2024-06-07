@@ -1,0 +1,23 @@
+name: DEPLOY (STAGING)
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+
+  workflow_dispatch:
+jobs:
+  deploy:
+    name: deploy_stg
+    runs-on: ubuntu-latest
+    environment: STAGING
+    steps:
+      # Build
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Calculate artifact tag
+        run: |
+          if [[ ${{ github.event_name }} == workflow_dispatch ]]; then
+            exit 1
+          else
+            echo "success!"
+          fi
