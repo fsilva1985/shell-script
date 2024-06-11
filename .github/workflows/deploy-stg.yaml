@@ -19,17 +19,19 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      - name: Calculate artifact tag
+      - name: Calculate artifact tag (workflow_dispatch)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
+      - name: Calculate artifact tag (push)
+        if: ${{ github.event_name == 'push' }}
         run: |
-          if [[ ${{ github.event_name }} == workflow_dispatch ]]; then
-            echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
-          elif [[ ${{ github.event_name }} == push ]]; then
-            tagvalue=$(echo ${{ github.ref }} | rev | cut -d'/' -f1 | rev)
-            echo "TAG=$tagvalue" >> $GITHUB_ENV
-          elif [[ ${{ github.event_name }} == workflow_run ]]; then
-            tagvalue=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*-rc.[0-9]*' | sort -V | tail -n 1)
-            echo "TAG=$tagvalue" >> $GITHUB_ENV
-          fi
+          tagvalue=$(echo ${{ github.ref }} | rev | cut -d'/' -f1 | rev)
+          echo "TAG=$tagvalue" >> $GITHUB_ENV
+      - name: Calculate artifact tag (workflow_run)
+        if: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          tagvalue=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*-rc.[0-9]*' | sort -V | tail -n 1)
+          echo "TAG=$tagvalue" >> $GITHUB_ENV
       - name: Print TAG
         run: |
           echo "The tag value is: $TAG"
